@@ -24,12 +24,12 @@ class Musketeer(Invader):
         self.health = 25000
 
 class Warrior(Invader):
-    def __init__(self, score, health):
+    def __init__(self):
         self.score = 50000
         self.health = 50000
 
 class BattleMage(Invader):
-    def __init__(self, score, health):
+    def __init__(self):
         self.score = 750000
         self.health = 500000
 

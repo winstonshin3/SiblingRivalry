@@ -31,6 +31,8 @@ class Game:
         Game.actions_taken = 0
         Game.board = []
 
+    def getOre(self) -> int:
+        return Game.ore
 
 
 
@@ -39,11 +41,7 @@ class Game:
 
 
 
-# class InvaderPart:
 
-# class MusketeerPart(InvaderPart):
-
-# class WarriorPart(InvaderPart):
 
 # class AlchemyTable:
 
