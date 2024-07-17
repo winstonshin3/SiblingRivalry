@@ -4,22 +4,22 @@ class Invader():
         return self.health
 
 class FlagGrunt(Invader):
-    def __init__(self, score, health):
+    def __init__(self):
         self.score = 250
         self.health = 500
 
 class SpearGrunt(Invader):
-    def __init__(self, score, health):
+    def __init__(self):
         self.score = 500
         self.health = 1000
     
 class SwordGrunt(Invader):
-    def __init__(self, score, health):
+    def __init__(self):
         self.score = 1250
         self.health = 2500
 
 class Musketeer(Invader):
-    def __init__(self, score, health):
+    def __init__(self):
         self.score = 15000
         self.health = 25000
 
@@ -32,8 +32,6 @@ class BattleMage(Invader):
     def __init__(self):
         self.score = 750000
         self.health = 500000
-
-
         
 # class InvaderType(Enum):
 #     FLAGGRUNT = Invader(250, 500)

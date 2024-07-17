@@ -2,6 +2,7 @@ from Invader import Musketeer, Warrior, BattleMage
 
 class MusketeerDecoy():    
     def __init__(self):
+        self.description = "Musketeer Decoy"
         pass
 
     def tapToSummon(self):
@@ -9,6 +10,7 @@ class MusketeerDecoy():
 
 class WarriorDecoy():
     def __init__(self):
+        self.description = "Warrior Decoy"
         pass
 
     def tapToSummon(self):
@@ -20,3 +22,8 @@ class BattleMageDecoy():
 
     def tapToSummon(self):
         return BattleMage()
+    
+# Tests
+# md = MusketeerDecoy()
+# m = md.tapToSummon()
+# print(m.score)

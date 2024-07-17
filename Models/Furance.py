@@ -15,16 +15,16 @@ class Furance:
         if f1.getLevel() != f2.getLevel():
             return [f1,f2]
         
-        if f1.getLevel() < 4:
+        if f1.getLevel() < 5:
             return cls(f1.getLevel() + 1)
         else:
             return cls(f1.getLevel())
-        
+    
 
 
-f1 = Furance(3)
-f2 = Furance(3)
+f1 = Furance(4)
+f2 = Furance(4)
 f3 = Furance.mergeFurance(f1,f2)
 print(f1.level)
 print(f2.level)
-print(f3.level)
+print(f3.produceOre())

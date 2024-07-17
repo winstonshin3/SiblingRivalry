@@ -3,9 +3,13 @@ class Weapon:
 
     def __init__(self, level):
         self.level = level
+        self.description = f"Weapon {self.level}"
 
     def getDamage(self):
         return Weapon.weapon_damage_map[self.level]
+
+    def getLevel(self):
+        return self.level
     
     @classmethod
     def mergeWeapon(cls, w1, w2):
