@@ -1,5 +1,3 @@
-from Decoy import MusketeerDecoy, WarriorDecoy
-
 class InvaderPart:
     def __init__(self, level):
         self.level = level
@@ -14,6 +12,7 @@ class MusketeerPart(InvaderPart):
     
     @classmethod
     def mergePart(cls, f1, f2):
+        from Models.Decoy import MusketeerDecoy
         if f1.getLevel() != f2.getLevel():
             return [f1,f2]
         
@@ -29,6 +28,7 @@ class WarriorPart(InvaderPart):
 
     @classmethod
     def mergePart(cls, f1, f2):
+        from Models.Decoy import WarriorDecoy
         if f1.getLevel() != f2.getLevel():
             return [f1,f2]
         
@@ -39,10 +39,11 @@ class WarriorPart(InvaderPart):
 
 #Tests
 
-# mp1 = MusketeerPart(2)
-# wp1 = WarriorPart(5)
-# wp2 = WarriorPart(5)
-# wd = WarriorPart.mergePart(wp1, wp2)
+if __name__ == "__main__":
+    mp1 = MusketeerPart(2)
+    wp1 = WarriorPart(5)
+    wp2 = WarriorPart(5)
+    wd = WarriorPart.mergePart(wp1, wp2)
 
-# print(mp1.description)
-# print(wd.description)
+    print(mp1.description)
+    print(wd.description)

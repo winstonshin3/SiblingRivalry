@@ -1,35 +1,45 @@
-from SiblingRivalry import Game
-
 class Resource():
-    def __init__(self, name, level):
-        self.name = name
+    def __init__(self, level):
         self.level = level
 
 class IronCrate(Resource):
-    def collectResource(self):
-        if self.level == 1:
-            Game.updateOre(2)
-        elif self.level == 2:
-            Game.updateIron(5)
+    def __init__(self, level):
+        super().__init__(level)
+        self.description = f"Iron Crate {self.level}"
 
-class GunPowderPile(Resource):
-    def collectResource(self):
+    def getResourceValue(self):
         if self.level == 1:
-            Game.updateGunPowder(2)
+            return 5000
         elif self.level == 2:
-            Game.updateGunPowder(5)
+            return 12000
+
+class GunpowderPile(Resource):
+    def __init__(self, level):
+        super().__init__(level)
+        self.description = f"Gunpowder Pile {self.level}"
+
+    def getResourceValue(self) -> int:
+        if self.level == 1:
+            return 2
+        elif self.level == 2:   
+            return 5
         elif self.level == 3:
-            Game.updateGunPowder(12)
+            return 12
         elif self.level == 4:
-            Game.updateGunPowder(30)
+            return 30
 
 class SteelPile(Resource):
-    def collectResource(self):
+    def __init__(self, level):
+        super().__init__(level)
+        self.description = f"Steel Pile {self.level}"
+
+    def getResourceValue(self):
         if self.level == 1:
-            Game.updateIron(2)
-        elif self.level == 2:
-            Game.updateIron(5)
+            return 2
+        elif self.level == 2:   
+            return 5
         elif self.level == 3:
-            Game.updateIron(12)
+            return 12
         elif self.level == 4:
-            Game.updateIron(30)
+            return 30
+

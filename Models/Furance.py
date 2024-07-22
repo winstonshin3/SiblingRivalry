@@ -20,11 +20,14 @@ class Furance:
         else:
             return cls(f1.getLevel())
     
+# Test
 
+if __name__ == "__main__":
+    f1 = Furance(4)
+    f2 = Furance(4)
+    f3 = Furance.mergeFurance(f1,f2)
+    print(f1.level)
+    print(f2.level)
+    print(f3.produceOre())
 
-f1 = Furance(4)
-f2 = Furance(4)
-f3 = Furance.mergeFurance(f1,f2)
-print(f1.level)
-print(f2.level)
-print(f3.produceOre())
+    
