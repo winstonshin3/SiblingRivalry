@@ -90,7 +90,65 @@ class Game:
             print("Recognize as Iron Crate")
         else:
             print("WARNING don't recognize object")
+
+    # CENTRAL PERFORM ACTION FUNCTION
+    def perform_action(self, action): # action is a number
+        pass
+
+    # ACTIONS
+    # COUNT: 13 - 
+
+    def action_no_action(self):
+        pass
     
+    def action_tap_worst_anvil(self):
+        pass
+
+    def action_tap_best_anvil(self):
+        pass
+
+    def action_attack_invader(self):
+        pass
+
+    def action_merge_resources(self):
+        pass
+
+    def action_merge_invader_parts(self):
+        pass
+
+    def action_merge_furnace(self):
+        pass
+
+    def action_merge_weapons(self):
+        pass
+
+    def action_merge_anvils(self):
+        pass
+
+    def action_discard(self):
+        pass
+
+    def action_tap_banner(self):
+        pass
+
+    def action_collect_resource(self): # could be split into three
+        pass
+
+    def action_purchase_from_store(self): # should be split into however many
+        pass
+
+    def action_purchase_from_trade(self): # should be split
+        pass
+
+    def action_purchase_upgrade(self): # should be split
+        pass
+
+    def action_summon_decoy(self): # should be split
+        pass
+
+    # ACTION MASK
+    def valid_action_mask(self):
+        pass
 
     
 # TEST
@@ -135,11 +193,10 @@ if __name__ == "__main__":
     print(len(g1.invaders))
 
     invader_list = g1.invaders
-    print(g1.invaders)
     for invader in g1.invaders:
         print(invader.health)
     g1.invaders = sorted(g1.invaders, key=lambda invader: invader.health)
-    print(g1.invaders)
+
         
     # s2 = a2.tapProduction()
     # print(s2.description, "\n")
@@ -150,11 +207,10 @@ if __name__ == "__main__":
     # s5 = a5.tapProduction()
     # print(s5.description, "\n")
 
-
-# class Cannon:
-
 # class AlchemyTable:
 
 # class Upgrades:
 
 # class Trades:
+
+# class Store
