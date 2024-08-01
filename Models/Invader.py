@@ -1,7 +1,10 @@
 class Invader():
-    def takeDamage(self, damage) -> int:
+    def takeDamage(self, damage):
         self.health = self.health - damage
+    
+    def getHealth(self) -> int:
         return self.health
+    
 
 class FlagGrunt(Invader):
     def __init__(self):

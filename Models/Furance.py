@@ -12,22 +12,18 @@ class Furance:
     
     @classmethod
     def mergeFurance(cls, f1, f2):
-        if f1.getLevel() != f2.getLevel():
+        if f1.getLevel() != f2.getLevel() or f1.getLevel() >= 5 or f2.getLevel() >= 5:
             return [f1,f2]
-        
-        if f1.getLevel() < 5:
-            return cls(f1.getLevel() + 1)
-        else:
-            return cls(f1.getLevel())
+        return [cls(f1.getLevel() + 1)]
     
 # Test
 
 if __name__ == "__main__":
-    f1 = Furance(4)
-    f2 = Furance(4)
+    f1 = Furance(6)
+    f2 = Furance(6)
     f3 = Furance.mergeFurance(f1,f2)
     print(f1.level)
     print(f2.level)
-    print(f3.produceOre())
+    print(len(f3))
 
     

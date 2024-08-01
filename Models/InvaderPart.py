@@ -4,11 +4,16 @@ class InvaderPart:
     
     def getLevel(self):
         return self.level
+    
 
 class MusketeerPart(InvaderPart):
     def __init__(self, level):
         super().__init__(level)
         self.description = f"Musketeer Part {self.level}"
+
+    def __repr__(self):
+        return self.description
+
     
     @classmethod
     def mergePart(cls, f1, f2):
@@ -17,14 +22,17 @@ class MusketeerPart(InvaderPart):
             return [f1,f2]
         
         if f1.getLevel() < 4:
-            return cls(f1.getLevel() + 1)
+            return [cls(f1.getLevel() + 1)]
         else:
-            return MusketeerDecoy()
+            return [MusketeerDecoy()]
 
 class WarriorPart(InvaderPart):
     def __init__(self, level):
         super().__init__(level)
         self.description = f"Warrior Part {self.level}"
+    
+    def __repr__(self):
+        return self.description
 
     @classmethod
     def mergePart(cls, f1, f2):
