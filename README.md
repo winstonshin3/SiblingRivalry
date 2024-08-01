@@ -1,1 +1,1 @@
-# PytorchPractice
+# Sibling Rivalry
