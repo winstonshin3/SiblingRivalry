@@ -8,7 +8,10 @@ class Resource():
 class IronCrate(Resource):
     def __init__(self, level):
         super().__init__(level)
-        self.description = f"Iron Crate {self.level}"
+        self.description = f"IC{self.level}"
+
+    def __repr__(self):
+        return self.description
 
     def getResourceValue(self):
         if self.level == 1:
@@ -25,7 +28,10 @@ class IronCrate(Resource):
 class GunpowderPile(Resource):
     def __init__(self, level):
         super().__init__(level)
-        self.description = f"Gunpowder Pile {self.level}"
+        self.description = f"GP{self.level}"
+
+    def __repr__(self):
+        return self.description
 
     def getResourceValue(self) -> int:
         if self.level == 1:
@@ -46,7 +52,10 @@ class GunpowderPile(Resource):
 class SteelPile(Resource):
     def __init__(self, level):
         super().__init__(level)
-        self.description = f"Steel Pile {self.level}"
+        self.description = f"SP{self.level}"
+
+    def __repr__(self):
+        return self.description
 
     def getResourceValue(self):
         if self.level == 1:

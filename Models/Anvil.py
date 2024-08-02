@@ -13,7 +13,7 @@ class Anvil:
         self.level = level
     
     def __repr__(self):
-        return f"Anvil {self.level}"
+        return f"A{self.level}"
     
     def getLevel(self):
         return self.level

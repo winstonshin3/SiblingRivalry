@@ -5,31 +5,45 @@ class Invader():
     def getHealth(self) -> int:
         return self.health
     
-
 class FlagGrunt(Invader):
     def __init__(self):
         self.score = 250
         self.health = 500
+    
+    def __repr__(self):
+        return "G1"
 
 class SpearGrunt(Invader):
     def __init__(self):
         self.score = 500
         self.health = 1000
-    
+
+    def __repr__(self):
+        return "G2"
+
 class SwordGrunt(Invader):
     def __init__(self):
         self.score = 1250
         self.health = 2500
+        
+    def __repr__(self):
+        return "G3"
 
 class Musketeer(Invader):
     def __init__(self):
         self.score = 15000
         self.health = 25000
 
+    def __repr__(self):
+        return "M"
+
 class Warrior(Invader):
     def __init__(self):
         self.score = 50000
         self.health = 50000
+    
+    def __repr__(self):
+        return "W"
 
 class BattleMage(Invader):
     def __init__(self):
