@@ -3,7 +3,7 @@ class Weapon:
 
     def __init__(self, level):
         self.level = level
-        self.description = f"Weapon {self.level}"
+        self.description = f"W{self.level}"
     
     def __repr__(self):
         return self.description

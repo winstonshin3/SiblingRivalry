@@ -12,6 +12,9 @@ class Anvil:
     def __init__(self, level):
         self.level = level
     
+    def __repr__(self):
+        return f"Anvil {self.level}"
+    
     def getLevel(self):
         return self.level
 
@@ -39,15 +42,10 @@ class Anvil:
             return WarriorPart(2)
     
     @classmethod
-    def mergeAnvil(cls, w1, w2):
-        if w1.getLevel() != w2.getLevel():
-            return [w1,w2]
-        
-        if w1.getLevel() < 4:
-            return cls(w1.getLevel() + 1)
-        else:
-            return cls(w1.getLevel())
-
+    def mergeAnvil(cls, a1, a2):
+        if a1.getLevel() != a2.getLevel() or a1.getLevel() >= 5 or a2.getLevel() >= 5:
+            return [a1,a2]
+        return [cls(a1.getLevel() + 1)]
 #Test
 
 if __name__ == "__main__":

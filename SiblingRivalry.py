@@ -9,6 +9,7 @@ class Game:
         self.steel = 0        
         self.ore = 0
         self.actions_taken = 0
+        self.invaders_killed = 0
         self.anvils = []
         self.furances = []
         self.weapons = []
@@ -32,24 +33,24 @@ class Game:
         oc = object.__class__
         if oc == Models.Anvil.Anvil:
             self.anvils.append(object)
+            self.anvils = sorted(self.anvils, key=lambda a : a.level)
         elif oc == Models.Furance.Furance:
             self.furances.append(object)
+            self.furances = sorted(self.furances, key=lambda f : f.level)
         elif oc == Models.Weapon.Weapon:
             self.weapons.append(object)
         elif oc == Models.InvaderPart.MusketeerPart:
             self.musketeerParts.append(object)
-            self.musketeerParts = sorted(self.musketeerParts, key=lambda mp : mp.level * -1)
+            self.musketeerParts = sorted(self.musketeerParts, key=lambda mp : mp.level)
         elif oc == Models.InvaderPart.WarriorPart:
             self.warriorParts.append(object)
-            self.warriorParts = sorted(self.warriorParts, key=lambda mp : mp.level * -1)
+            self.warriorParts = sorted(self.warriorParts, key=lambda wp : wp.level)
         elif oc == Models.Decoy.MusketeerDecoy:
             self.musketeerDecoys.append(object)
         elif oc == Models.Decoy.WarriorDecoy:
             self.warriorDecoys.append(object)
-            print("Recognized as Warrior Decoy")
         elif oc == Models.Decoy.BattleMageDecoy:
             self.battlemageDecoys.append(object)
-            print("Recognized as BattleMage Decoy")
         elif oc == Models.Invader.FlagGrunt:
             self.flagGrunts.append(object)
         elif oc == Models.Invader.SpearGrunt:
@@ -64,12 +65,16 @@ class Game:
             self.battemages.append(object)                
         elif oc == Models.Cannon.Cannon:
             self.cannons.append(object)
+            self.cannons = sorted(self.cannons, key=lambda c : c.level)
         elif oc == Models.Resource.SteelPile:
             self.steelPile.append(object)
+            self.steelPile = sorted(self.steelPile, key=lambda sp : sp.level)
         elif oc == Models.Resource.GunpowderPile:
             self.gunpowderPile.append(object)
+            self.gunpowderPile = sorted(self.gunpowderPile, key=lambda gp : gp.level)
         elif oc == Models.Resource.IronCrate:
             self.ironCrates.append(object)
+            self.ironCrates = sorted(self.ironCrates, key=lambda ic : ic.level)
         else:
             print("WARNING don't recognize object")
             return
@@ -92,9 +97,11 @@ class Game:
     # Returns reward values
     # Count: 13 - 35
 
+    # PRIORITY
     def action_no_action(self):
         return 0
 
+    # PRIORITY
     def action_tap_worst_anvil(self):
         if not self.anvils:
             return -1
@@ -103,6 +110,7 @@ class Game:
         self.addToGameInventory(anvil_product)
         return 10
 
+    # PRIORITY
     def action_tap_best_anvil(self):
         if not self.anvils:
             return -1
@@ -111,57 +119,65 @@ class Game:
         self.addToGameInventory(anvil_product)
         return 10
 
-    def action_attack_flag_grunt(self, damage):  # MOST COMPLETE
+    def action_attack_flag_grunt(self, damage): 
         from Models.Resource import IronCrate
         if not self.flagGrunts:
             return -1
-        flagGrunt = self.flagGrunts.pop(0)
+        flagGrunt = self.flagGrunts[0]
         flagGrunt.takeDamage(damage)
         if flagGrunt.getHealth() <= 0:
+            self.flagGrunts.pop(0)
             self.addToGameInventory(IronCrate(1))
             return 250 + damage + flagGrunt.getHealth() * 2
-        self.addToGameInventory(flagGrunt)
         return damage
 
-    def action_attack_spear_grunt(self, damage): # TODO
+    def action_attack_spear_grunt(self, damage): 
+        from Models.Resource import GunpowderPile
         if not self.spearGrunts:
             return -1
-        spear_grunt = self.spearGrunts.pop(0)
+        spear_grunt = self.spearGrunts[0]
         spear_grunt.takeDamage(damage)
         if spear_grunt.getHealth() <= 0:
+            self.spearGrunts.pop(0)
+            self.addToGameInventory(GunpowderPile(1))
             return 500 + damage + spear_grunt.getHealth() * 2
-        self.addToGameInventory(spear_grunt)
         return damage
 
-    def action_attack_sword_grunt(self, damage): # TODO
+    def action_attack_sword_grunt(self, damage): 
+        from Models.Resource import SteelPile
         if not self.swordGrunts:
             return -1
-        sword_grunt = self.swordGrunts[-1]
+        sword_grunt = self.swordGrunts[0]
         sword_grunt.takeDamage(damage)
         if sword_grunt.getHealth() <= 0:
             self.swordGrunts.pop(0)
+            self.addToGameInventory(SteelPile(1))
             return 1250 + damage + sword_grunt.getHealth() * 2
         return damage
 
     # PRIORITY
-    def action_attack_musketeer(self, damage): # TODO
+    def action_attack_musketeer(self, damage): 
+        from Models.Resource import GunpowderPile
         if not self.musketeers:
             return -1
-        musketeer = self.musketeers[-1]
+        musketeer = self.musketeers[0]
         musketeer.takeDamage(damage)
         if musketeer.getHealth() <= 0:
-            self.musketeer.pop(0)
+            self.musketeers.pop(0)
+            self.addToGameInventory(GunpowderPile(3))
             return 15000 + damage + musketeer.getHealth() * 2
         return damage
 
     # PRIORITY
-    def action_attack_warrior(self, damage): # TODO
+    def action_attack_warrior(self, damage): 
+        from Models.Resource import SteelPile
         if not self.warriors:
             return -1
-        warrior = self.warriors[-1]
+        warrior = self.warriors[0]
         warrior.takeDamage(damage)
         if warrior.getHealth() <= 0:
             self.warriors.pop(0)
+            self.addToGameInventory(SteelPile(3))
             return 50000 + damage + warrior.getHealth() * 2
         return damage
 
@@ -185,23 +201,42 @@ class Game:
         return -1
 
     # PRIORITY
-    def action_merge_invader_parts(self):
-        from Models.InvaderPart import MusketeerPart
-        if len(self.musketeerParts) < 2:
-            return -1
-        for i in range(len(self.musketeerParts) - 1):
-            f, s = self.musketeerParts[i], self.musketeerParts[i+1]
-            new_musketeerParts = MusketeerPart.mergePart(f,s)
-            if len(new_musketeerParts) == 1:
-                self.musketeerParts.pop(i)
-                self.musketeerParts.pop(i)
-                self.addToGameInventory(new_musketeerParts[0])
-                return new_musketeerParts[0].description
+    def action_merge_invader_parts(self): # TODO
+        from Models.InvaderPart import MusketeerPart, WarriorPart
+        if len(self.musketeerParts) > 2:
+            for i in range(len(self.musketeerParts) - 1):
+                f, s = self.musketeerParts[i], self.musketeerParts[i+1]
+                new_musketeerParts = MusketeerPart.mergePart(f,s)
+                if len(new_musketeerParts) == 1:
+                    self.musketeerParts.pop(i)
+                    self.musketeerParts.pop(i)
+                    self.addToGameInventory(new_musketeerParts[0])
+                    return new_musketeerParts[0].description
+        if len(self.warriorParts) > 2:
+            for i in range(len(self.warriorParts) - 1):
+                f, s = self.warriorParts[i], self.warriorParts[i+1]
+                new_warriorParts = WarriorPart.mergePart(f,s)
+                if len(new_warriorParts) == 1:
+                    self.warriorParts.pop(i)
+                    self.warriorParts.pop(i)
+                    self.addToGameInventory(new_warriorParts[0])
+                    return new_warriorParts[0].description    
         return -1
 
     # PRIORITY
     def action_merge_furnace(self):
-        pass
+        from Models.Furance import Furance
+        if len(self.furances) < 2:
+            return -1
+        for i in range(len(self.furances) - 1):
+            f, s = self.furances[i], self.furances[i+1]
+            new_furances = Furance.mergeFurance(f,s)
+            if len(new_furances) == 1:
+                self.furances.pop(i)
+                self.furances.pop(i)
+                self.addToGameInventory(new_furances[0])
+                return new_furances[0].level
+        return -1
 
     # PRIORITY
     def action_merge_weapons(self):
@@ -219,8 +254,19 @@ class Game:
         return -1
 
     # PRIORITY
-    def action_merge_anvils(self):
-        pass
+    def action_merge_anvil(self):
+        from Models.Anvil import Anvil
+        if len(self.anvils) < 2:
+            return -1
+        for i in range(len(self.anvils) - 1):
+            f, s = self.anvils[i], self.anvils[i+1]
+            new_anvils = Anvil.mergeAnvil(f,s)
+            if len(new_anvils) == 1:
+                self.anvils.pop(i)
+                self.anvils.pop(i)
+                self.addToGameInventory(new_anvils[0])
+                return new_anvils[0].level
+        return -2
 
     # PRIORITY
     def action_discard(self):
@@ -236,8 +282,39 @@ class Game:
     # PRIORITY: 
     # Future note: should be split into however many
     # Purchase furances, anvils from store.
-    def action_purchase_from_store(self): 
+    def action_purchase_cannon(self): 
+        from Models.Cannon import Cannon
+        if self.gun_powder < 20:
+            return -1
+        self.updateGunpowder(-20)
+        self.addToGameInventory(Cannon(1))
+        remaining_damage = 100
+        cost_of_gp = -100
+        return remaining_damage + cost_of_gp
+
+    def action_purchase_furnace(self): 
+        from Models.Furance import Furance
+        if self.gun_powder < 10 or self.steel < 5:
+            return -1
+        self.updateGunpowder(-10)
+        self.updateSteel(-5)
+        self.addToGameInventory(Furance(1))
+        remaining_ore = 100
+        cost_of_gp = -50
+        cost_of_s = -50
+        return remaining_ore + cost_of_gp + cost_of_s
+
+    def action_purchase_anvil(self):
+        from Models.Anvil import Anvil
+        if self.steel < 25:
+            return -1
+        self.updateSteel(-25)
+        self.addToGameInventory(Anvil(1))
+        remaining_value = 100
+        cost_of_s = -100
+        return remaining_value + cost_of_s 
         pass
+
 
     def action_purchase_from_trade(self): # should be split
         pass
@@ -260,6 +337,26 @@ class Game:
 
     def updateOre(self, ore):
         self.ore = self.ore + ore
+
+    def getResources(self):
+        return self.ironCrates + self.gunpowderPile + self.steelPile
+    
+    def getInvaders(self):
+        invaders = self.flagGrunts + self.spearGrunts + self.swordGrunts + self.musketeers + self.warriors
+        invaders = sorted(invaders, key=lambda i : i.health)
+        return invaders
+    
+    def getStructures(self):
+        return self.anvils + self.furances + self.cannons
+    
+    def getMisc(self):
+        return self.musketeerParts + self.musketeerDecoys + self.warriorParts + self.warriorDecoys + self.weapons
+
+    def render(self):
+        print("Structures\t", self.getStructures())
+        print("Resources\t", self.getResources())
+        print("Invaders\t", self.getInvaders())
+        print("Parts & Decoys\t", self.getMisc())
 
     def reset(self):
         self.score = 0
@@ -293,9 +390,18 @@ class Game:
     
 if __name__ == "__main__":
     g1 = Game()
-    a1 = Models.Anvil.Anvil(1)
-    a2 = Models.Anvil.Anvil(5)
+    a1 = Models.Anvil.Anvil(4)
+    a2 = Models.Anvil.Anvil(4)
+    a3 = Models.Anvil.Anvil(1)
+    a4 = Models.Anvil.Anvil(1)
+    f1 = Models.Furance.Furance(1)
+    f2 = Models.Furance.Furance(1)
+    f3 = Models.Furance.Furance(1)
+    f4 = Models.Furance.Furance(1)
     c1 = Models.Cannon.Cannon(1)
+    c2 = Models.Cannon.Cannon(1)
+    c3 = Models.Cannon.Cannon(1)
+    c4 = Models.Cannon.Cannon(1)
     md1 = Models.Decoy.MusketeerDecoy()
     wd1 = Models.Decoy.WarriorDecoy()
     bm1 = Models.Decoy.BattleMageDecoy()
@@ -318,29 +424,44 @@ if __name__ == "__main__":
     w1 = Models.Weapon.Weapon(1)
     w2 = Models.Weapon.Weapon(2)
 
-    print("---------")
+    print("-------------------------------------------------------")
+
     g1.addToGameInventory(a1)
+    g1.addToGameInventory(a2)
+    g1.addToGameInventory(a3)
+    g1.addToGameInventory(a4)
     # g1.addToGameInventory(a2)
     # print(g1.spearGrunts[0].health)
     # print(g1.swordGrunts[0].health)
     # print(g1.musketeers[0].health)
     # print(g1.warriors[0].health)
-    print("---------")
-    for i in range(10):
+    g1.render()
+
+    print("-------------------------------------------------------")
+
+    print("Action 1\t", g1.action_merge_anvil())
+    print("Action 2\t", g1.action_merge_anvil())
+    print("Action 3\t", g1.action_merge_anvil())
+    print("Action 4\t", g1.action_merge_anvil())
+    for i in range(20):
         g1.action_tap_best_anvil()
-    print(len(g1.weapons))
-    print(g1.weapons)
-    print("---------")
-    count = 0
+
+    print("-------------------------------------------------------")
+
+    g1.render()
+    for i in range(5):
+        g1.action_merge_weapons()
     while True:
-        res = g1.action_merge_weapons()
+        res = g1.action_merge_invader_parts()
         if res == -1:
             break
-        print("Rewarded", res)
-        count += 1
-    print("Merged", count)
-    print(g1.weapons)
-    print("---------")
+
+    print("-------------------------------------------------------")
+
+    g1.render()
+
+    print("-------------------------------------------------------")
+
         
     # s2 = a2.tapProduction()
     # print(s2.description, "\n")
