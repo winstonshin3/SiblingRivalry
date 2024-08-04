@@ -85,9 +85,9 @@ class Game:
     def perform_action(self, action): # action is a number
         mask = self.get_action_mask()
         if action > len(mask) - 1 or action < 0:
-            return -6969
+            return -10000
         if not mask[action]:
-            return -69
+            return -1000
         
         action_function = self.action_mapping.get(action)
         if action_function:
@@ -498,11 +498,6 @@ class Game:
         pass
 
 
-
-
-
-
-
     # UTILITIES
     def updateScore(self, score):
         self.score = self.score + score
@@ -545,28 +540,32 @@ class Game:
 
     def reset(self):
         self.score = 0
-        self.gun_powder = 0
-        self.steel = 0        
-        self.ore = 50000
         self.actions_taken = 0
-        self.anvils = []
-        self.furances = []
-        self.weapons = []
-        self.musketeerParts = []
-        self.warriorParts = []
-        self.musketeerDecoys = []
-        self.warriorDecoys = []
-        self.battlemageDecoys = []
-        self.flagGrunts = []
-        self.spearGrunts = []
-        self.swordGrunts = []
-        self.musketeers = []
-        self.warriors = []
-        self.battemages = []
-        self.cannons = []
-        self.gunpowderPile = []
-        self.steelPile = []
-        self.ironCrates = []
+        self.invaders_killed = 0
+
+        self.gun_powder = 0         # divide by 5
+        self.steel = 0              # divide by 5
+        self.ore = 0                # divide by 250
+        self.anvils = []            # 5
+        self.furances = []          # 40
+        self.weapons = []           # 40
+        self.musketeerParts = []    # 4
+        self.warriorParts = []      # 4
+        self.musketeerDecoys = []   # 10 
+        self.warriorDecoys = []     # 10
+        self.musketeers = []        # 10
+        self.warriors = []          # 10
+        self.cannons = []           # 40
+        self.gunpowderPile = []     # 4
+        self.steelPile = []         # 4
+        self.ironCrates = []        # 20
+
+        # Currently not in use
+        self.battemages = []        # 10
+        self.battlemageDecoys = []  # 10
+        self.flagGrunts = []        # 10
+        self.spearGrunts = []       # 10
+        self.swordGrunts = []       # 10
 
     def getOre(self) -> int:
         return self.ore
