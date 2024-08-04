@@ -5,7 +5,7 @@ class Furance:
         self.level = level
 
     def __repr__(self):
-        return f"Furance {self.level}"
+        return f"F{self.level}"
     
     def produceOre(self) -> int:
         return Furance.ore_production_map[self.level]

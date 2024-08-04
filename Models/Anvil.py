@@ -18,6 +18,9 @@ class Anvil:
     def getLevel(self):
         return self.level
 
+    def getCost(self):
+        return Anvil.anvil_cost_map[self.level]
+
     def tapProduction(self):
         from Models.InvaderPart import MusketeerPart, WarriorPart
         from Models.Weapon import Weapon
