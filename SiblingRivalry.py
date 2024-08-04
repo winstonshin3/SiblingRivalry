@@ -4,34 +4,7 @@ import Models.Resource,     Models.Weapon
 
 class Game:
     def __init__(self):
-        self.score = 0
-        self.actions_taken = 0
-        self.invaders_killed = 0
-
-        self.gun_powder = 0         # divide by 5
-        self.steel = 0              # divide by 5
-        self.ore = 0                # divide by 250
-        self.anvils = []            # 5
-        self.furances = []          # 40
-        self.weapons = []           # 40
-        self.musketeerParts = []    # 4
-        self.warriorParts = []      # 4
-        self.musketeerDecoys = []   # 10 
-        self.warriorDecoys = []     # 10
-        self.musketeers = []        # 10
-        self.warriors = []          # 10
-        self.cannons = []           # 40
-        self.gunpowderPile = []     # 4
-        self.steelPile = []         # 4
-        self.ironCrates = []        # 20
-
-        # Currently not in use
-        self.battemages = []        # 10
-        self.battlemageDecoys = []  # 10
-        self.flagGrunts = []        # 10
-        self.spearGrunts = []       # 10
-        self.swordGrunts = []       # 10
-        
+        self.reset()
         self.action_mapping = {
             0: self.action_no_action,
             1: self.action_tap_worst_anvil,
@@ -57,18 +30,18 @@ class Game:
         board_occupied = self.getBoardOccupied()
         # These policies are coupled to self.action_mapping:
         mask[0] = True
-        mask[1] = bool(self.anvils) and board_occupied < 40
-        mask[2] = bool(self.anvils) and board_occupied < 40
+        mask[1] = bool(self.anvils) and board_occupied < 40 and self.ore >= self.anvils[0].getCost()
+        mask[2] = bool(self.anvils) and board_occupied < 40 and self.ore >= self.anvils[-1].getCost()
         mask[3] = self.mergeAble(self.weapons, 5)
         mask[4] = self.mergeAble(self.musketeerParts, 4) or self.mergeAble(self.warriorParts, 4)
         mask[5] = bool(self.ironCrates or self.gunpowderPile or self.steelPile)
         mask[6] = self.mergeAble(self.gunpowderPile, 3) or self.mergeAble(self.steelPile, 3)
-        mask[7] = bool(self.musketeers)
-        mask[8] = bool(self.warriors)
+        mask[7] = bool(self.musketeers) and bool(self.weapons) and self.weapons[-1].level > 0
+        mask[8] = bool(self.warriors) and bool(self.weapons) and self.weapons[-1].level > 0
         mask[9] = self.mergeAble(self.anvils, 4)
         mask[10] = self.mergeAble(self.furances, 4)
         mask[11] = bool(self.musketeerDecoys or self.warriorDecoys)
-        mask[12] = True
+        mask[12] = self.getBoardOccupied() >= 40
         mask[13] = self.gun_powder >= 20 and board_occupied < 40
         mask[14] = self.gun_powder >= 10 and self.steel >= 5 and board_occupied < 40
         mask[15] = self.steel >= 25  and board_occupied < 40
@@ -190,7 +163,7 @@ class Game:
         else:
             print("WARNING don't recognize object")
             return
-        print("Added", oc.__name__)
+        # print("Added", oc.__name__)
 
     
     
@@ -277,6 +250,7 @@ class Game:
             self.musketeers.pop(0)
             self.addToInventory(GunpowderPile(3))
             self.updateKillCount()
+            self.updateScore(musketeer.score)
             return 15000 + damage + musketeer.getHealth() * 2
         return damage
 
@@ -295,6 +269,7 @@ class Game:
             self.warriors.pop(0)
             self.addToInventory(SteelPile(3))
             self.updateKillCount()
+            self.updateScore(warrior.score)
             return 50000 + damage + warrior.getHealth() * 2
         return damage
 
@@ -328,9 +303,8 @@ class Game:
                 new_musketeerParts = MusketeerPart.mergePart(f,s)
                 if len(new_musketeerParts) == 1:
                     self.musketeerParts.pop(i)
-                    
                     self.musketeerParts.pop(i)
-                    
+
                     self.addToInventory(new_musketeerParts[0])
                     return 69
         if len(self.warriorParts) > 1:
@@ -339,7 +313,6 @@ class Game:
                 new_warriorParts = WarriorPart.mergePart(f,s)
                 if len(new_warriorParts) == 1:
                     self.warriorParts.pop(i)
-                    
                     self.warriorParts.pop(i)
                     
                     self.addToInventory(new_warriorParts[0])
@@ -539,22 +512,33 @@ class Game:
         print("---------------------------------------------------------------------------------")
 
     def reset(self):
+        a1 = Models.Anvil.Anvil(1)
+        m1 = Models.Invader.Musketeer()
+        m2 = Models.Invader.Musketeer()
+        w1 = Models.Invader.Warrior()
+        f1 = Models.Furance.Furance(1)
+        f2 = Models.Furance.Furance(1)
+        f3 = Models.Furance.Furance(2)
+        f4 = Models.Furance.Furance(2)
+        f5 = Models.Furance.Furance(3)
+        f6 = Models.Furance.Furance(3)
+
         self.score = 0
         self.actions_taken = 0
         self.invaders_killed = 0
 
-        self.gun_powder = 0         # divide by 5
-        self.steel = 0              # divide by 5
-        self.ore = 0                # divide by 250
-        self.anvils = []            # 5
-        self.furances = []          # 40
+        self.gun_powder = 25         # divide by 5
+        self.steel = 15              # divide by 5
+        self.ore = 50000                # divide by 250
+        self.anvils = [a1]            # 5
+        self.furances = [f1, f2, f3, f4, f5, f6]          # 40
         self.weapons = []           # 40
         self.musketeerParts = []    # 4
         self.warriorParts = []      # 4
         self.musketeerDecoys = []   # 10 
         self.warriorDecoys = []     # 10
-        self.musketeers = []        # 10
-        self.warriors = []          # 10
+        self.musketeers = [m1, m2]        # 10
+        self.warriors = [w1]          # 10
         self.cannons = []           # 40
         self.gunpowderPile = []     # 4
         self.steelPile = []         # 4
@@ -574,61 +558,10 @@ class Game:
     
 if __name__ == "__main__":
     g1 = Game()
-    a1 = Models.Anvil.Anvil(1)
-    a2 = Models.Anvil.Anvil(2)
-    a3 = Models.Anvil.Anvil(3)
-    a4 = Models.Anvil.Anvil(4)
-    f1 = Models.Furance.Furance(1)
-    f2 = Models.Furance.Furance(1)
-    f3 = Models.Furance.Furance(2)
-    f4 = Models.Furance.Furance(2)
-    f5 = Models.Furance.Furance(3)
-    f6 = Models.Furance.Furance(3)
-    c1 = Models.Cannon.Cannon(1)
-    c2 = Models.Cannon.Cannon(1)
-    c3 = Models.Cannon.Cannon(1)
-    c4 = Models.Cannon.Cannon(1)
-    md1 = Models.Decoy.MusketeerDecoy()
-    wd1 = Models.Decoy.WarriorDecoy()
-    bm1 = Models.Decoy.BattleMageDecoy()
-    i1 = Models.Invader.FlagGrunt()
-    i2 = Models.Invader.SpearGrunt()
-    i3 = Models.Invader.SwordGrunt()
-    i4 = Models.Invader.Musketeer()
-    i5 = Models.Invader.Warrior()
-    i6 = Models.Invader.BattleMage()
-    mp1 = Models.InvaderPart.MusketeerPart(4)
-    mp2 = Models.InvaderPart.MusketeerPart(4)
-    wp1 = Models.InvaderPart.WarriorPart(4)
-    wp2 = Models.InvaderPart.WarriorPart(4)
-    r1 = Models.Resource.GunpowderPile(1)
-    r2 = Models.Resource.GunpowderPile(1)
-    r3 = Models.Resource.GunpowderPile(1)
-    r4 = Models.Resource.GunpowderPile(1)
-    
-    # r2 = Models.Resource.SteelPile(1)
-    # r3 = Models.Resource.IronCrate(1)
-    w1 = Models.Weapon.Weapon(6)
-    w2 = Models.Weapon.Weapon(6)
-    w3 = Models.Weapon.Weapon(5)
-    w4 = Models.Weapon.Weapon(5)
-    g1.updateOre(50000)
-    g1.updateGunpowder(25)
-    g1.addToInventory(a1)
-    g1.addToInventory(f1)
-    g1.addToInventory(f2)
-    g1.addToInventory(f3)
-    g1.addToInventory(f4)
-    g1.addToInventory(f5)
-    g1.addToInventory(f6)
-    g1.addToInventory(w1)
-    g1.addToInventory(w2)
-    g1.addToInventory(i4)
-
     while True:
         g1.render()
-        print(g1.get_action_mask())
-        print(g1.getObservation())
+        print("Action mask:", g1.get_action_mask())
+        print("Observation:", g1.getObservation())
         user_input = input("\nPerform Action: ").strip().lower()
         try:
             user_input = int(user_input)

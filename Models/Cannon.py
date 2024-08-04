@@ -4,5 +4,8 @@ class Cannon:
     def __init__(self, level):
         self.level = level
     
+    def __repr__(self):
+        return f"C{self.level}"
+    
     def getDamage(self):
         return Cannon.cannon_damage_map[self.level]
