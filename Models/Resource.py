@@ -19,11 +19,8 @@ class IronCrate(Resource):
         elif self.level == 2:
             return 12000
         
-    @classmethod
-    def mergeResource(cls, r1, r2):
-        if r1.getLevel() != r2.getLevel() or r1.getLevel() >= 2 or r2.getLevel() >=2:
-            return [r1,r2]
-        return [cls(r1.getLevel() + 1)]
+    def getUpgrade(self):
+        return IronCrate(self.level + 1)
 
 class GunpowderPile(Resource):
     def __init__(self, level):
@@ -42,12 +39,9 @@ class GunpowderPile(Resource):
             return 12
         elif self.level == 4:
             return 30
-        
-    @classmethod
-    def mergeResource(cls, r1, r2):
-        if r1.getLevel() != r2.getLevel() or r1.getLevel() >= 4 or r2.getLevel() >= 4:
-            return [r1,r2]
-        return [cls(r1.getLevel() + 1)]
+    
+    def getUpgrade(self):
+        return GunpowderPile(self.level + 1)
 
 class SteelPile(Resource):
     def __init__(self, level):
@@ -67,9 +61,6 @@ class SteelPile(Resource):
         elif self.level == 4:
             return 30
     
-    @classmethod
-    def mergeResource(cls, r1, r2):
-        if r1.getLevel() != r2.getLevel() or r1.getLevel() >= 4 or r2.getLevel() >= 4:
-            return [r1,r2]
-        return [cls(r1.getLevel() + 1)]
+    def getUpgrade(self):
+        return SteelPile(self.level + 1)
 

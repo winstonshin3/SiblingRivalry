@@ -14,6 +14,9 @@ class Weapon:
     def getLevel(self):
         return self.level
     
+    def getUpgrade(self):
+        return Weapon(self.level + 1)
+    
     @classmethod
     def mergeWeapon(cls, w1, w2):
         if w1.getLevel() != w2.getLevel() or w1.getLevel() >= 6:

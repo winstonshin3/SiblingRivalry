@@ -14,6 +14,12 @@ class MusketeerPart(InvaderPart):
     def __repr__(self):
         return self.description
 
+    def getUpgrade(self):
+        from Models.Decoy import MusketeerDecoy
+        if self.level < 4:
+            return MusketeerPart(self.level + 1)
+        else:
+            return MusketeerDecoy() 
     
     @classmethod
     def mergePart(cls, f1, f2):
@@ -33,6 +39,13 @@ class WarriorPart(InvaderPart):
     
     def __repr__(self):
         return self.description
+    
+    def getUpgrade(self):
+        from Models.Decoy import WarriorDecoy
+        if self.level < 4:
+            return WarriorPart(self.level + 1)
+        else:
+            return WarriorDecoy() 
 
     @classmethod
     def mergePart(cls, f1, f2):

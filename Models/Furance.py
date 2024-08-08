@@ -13,6 +13,9 @@ class Furance:
     def getLevel(self):
         return self.level
     
+    def getUpgrade(self):
+        return Furance(self.level + 1)
+    
     @classmethod
     def mergeFurance(cls, f1, f2):
         if f1.getLevel() != f2.getLevel() or f1.getLevel() >= 5 or f2.getLevel() >= 5:

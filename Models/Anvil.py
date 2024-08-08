@@ -43,6 +43,9 @@ class Anvil:
             return MusketeerPart(2)
         elif summon_index == 4:
             return WarriorPart(2)
+        
+    def getUpgrade(self):
+        return Anvil(self.level + 1)
     
     @classmethod
     def mergeAnvil(cls, a1, a2):
