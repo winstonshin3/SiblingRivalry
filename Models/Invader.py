@@ -12,6 +12,9 @@ class FlagGrunt(Invader):
     
     def __repr__(self):
         return "G1"
+    
+    def getScore(self) -> int:
+        return self.score
 
 class SpearGrunt(Invader):
     def __init__(self):
@@ -20,6 +23,9 @@ class SpearGrunt(Invader):
 
     def __repr__(self):
         return "G2"
+    
+    def getScore(self) -> int:
+        return self.score
 
 class SwordGrunt(Invader):
     def __init__(self):
@@ -28,11 +34,17 @@ class SwordGrunt(Invader):
         
     def __repr__(self):
         return "G3"
+    
+    def getScore(self) -> int:
+        return self.score
 
 class Musketeer(Invader):
     def __init__(self):
         self.score = 15000
         self.health = 25000
+
+    def getScore(self) -> int:
+        return self.score
 
     def __repr__(self):
         return "M"
@@ -44,6 +56,9 @@ class Warrior(Invader):
     
     def __repr__(self):
         return "W"
+
+    def getScore(self) -> int:
+        return self.score
 
 class BattleMage(Invader):
     def __init__(self):

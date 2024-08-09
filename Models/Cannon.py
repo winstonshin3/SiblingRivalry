@@ -7,5 +7,11 @@ class Cannon:
     def __repr__(self):
         return f"C{self.level}"
     
+    def getLevel(self):
+        return self.level
+    
+    def getUpgrade(self):
+        return Cannon(self.level + 1)
+    
     def getDamage(self):
         return Cannon.cannon_damage_map[self.level]

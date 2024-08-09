@@ -2,15 +2,34 @@
 
 TODOs
 
-- Decide on value of high array return in the env
-- Refractor addToInventory to use a dictionary
-- Continue to tweak action masker
+- More purchases and add conditionals
+- Upgrades
+- Trades
 
-- Add cannon damage update
-- Add banner object
+TECHNICAL DEBT
 
 - Refractor all reward functions
-- 
+- Create mergable interface
+  - Anvil, Cannon, Furance, InvaderPart, Resource, Weapon
+- Extract action functions
+  - solution1: Strategy pattern
+  - solutoin2:
 
-- Split collect resource action
+REWARD CALCULATOR (should be between -1 to 1)
+- Muskeeteer = 15000, 25000
+- Warrior = 50000, 50000
+- Damage
+  - score / health * damage
+- Ore
+  - anvil.level() -> combination
+- Gun Powder 
+  - 
+- Steel
+- Invader Part
+  - Muskeeter 2**level * 
+- Furance
+- Weapons
+- Anvil
+- Decoy
+- Discard
 

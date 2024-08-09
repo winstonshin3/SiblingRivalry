@@ -47,11 +47,6 @@ class Anvil:
     def getUpgrade(self):
         return Anvil(self.level + 1)
     
-    @classmethod
-    def mergeAnvil(cls, a1, a2):
-        if a1.getLevel() != a2.getLevel() or a1.getLevel() >= 5 or a2.getLevel() >= 5:
-            return [a1,a2]
-        return [cls(a1.getLevel() + 1)]
 #Test
 
 if __name__ == "__main__":

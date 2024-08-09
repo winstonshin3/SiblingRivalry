@@ -24,20 +24,19 @@ class CustomEnv(gym.Env):
         super().__init__()
         self.g1 = sr.Game()
         self.action_space = spaces.Discrete(len(self.g1.action_mapping))
-        # Example for using image as input (channel-first; channel-last also works):
-        high = np.array([400, 400, 40, 50, 40, 50, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40])
-        self.observation_space = spaces.Box(low=0, high=high, shape=(17, ), dtype=np.int64)
+        high = np.array([400, 400, 40, 500, 40, 500, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40])
+        self.observation_space = spaces.Box(low=0, high=high, shape=(18, ), dtype=np.int64)
 
     def step(self, action):
         reward = self.g1.perform_action(action)
         obs =  self.g1.getObservation()
         observation = np.array(obs)
         terminated = False
-        if self.g1.actions_taken > 8640:
+        if self.g1.actions_taken > 8640*3:
             terminated = True
         truncated = False
         info = {}
-        if self.g1.actions_taken == 8640:
+        if self.g1.actions_taken == 8640*3:
             self.g1.render()
 
         return observation, reward, terminated, truncated, info
@@ -45,7 +44,7 @@ class CustomEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.g1.reset()
-        obs =  self.g1.getObservation()
+        obs = self.g1.getObservation()
         observation = np.array(obs)
 
         info = {}
@@ -64,7 +63,7 @@ if __name__ == "__main__":
     env = gym.make('sibling_rivalry', render_mode='human')
     # Check environment
     env = ActionMasker(env, mask_fn)
-    model = MaskablePPO(MaskableActorCriticPolicy, env, gamma = 0.9999, ent_coef=0.001, verbose=1)
-    model.learn(total_timesteps=8640*100)
-
+    model = MaskablePPO(MaskableActorCriticPolicy, env, gamma = 0.9999, ent_coef=0.001, verbose=0)
+    model.learn(total_timesteps=8640*300)
+    # env.reset()
     # check_env(env.unwrapped)

@@ -21,16 +21,6 @@ class MusketeerPart(InvaderPart):
         else:
             return MusketeerDecoy() 
     
-    @classmethod
-    def mergePart(cls, f1, f2):
-        from Models.Decoy import MusketeerDecoy
-        if f1.getLevel() != f2.getLevel():
-            return [f1,f2]
-        
-        if f1.getLevel() < 4:
-            return [cls(f1.getLevel() + 1)]
-        else:
-            return [MusketeerDecoy()]
 
 class WarriorPart(InvaderPart):
     def __init__(self, level):
@@ -47,16 +37,6 @@ class WarriorPart(InvaderPart):
         else:
             return WarriorDecoy() 
 
-    @classmethod
-    def mergePart(cls, f1, f2):
-        from Models.Decoy import WarriorDecoy
-        if f1.getLevel() != f2.getLevel():
-            return [f1,f2]
-        
-        if f1.getLevel() < 4:
-            return [cls(f1.getLevel() + 1)]
-        else:
-            return [WarriorDecoy()]
 
 #Tests
 
