@@ -9,6 +9,8 @@ TODOs
 TECHNICAL DEBT
 
 - Refractor all reward functions
+- Replace attribute sorting in addToInventory
+  - solution1: 2-sum + find min?
 - Create mergable interface
   - Anvil, Cannon, Furance, InvaderPart, Resource, Weapon
 - Extract action functions

@@ -38,7 +38,7 @@ class Game:
             24: self.action_merge_cannon
         }
 
-        # ACTION MASK
+    # ACTION MASK
     def get_action_mask(self):
         mask = [True] * len(self.action_mapping)
         board_occupied = self.getBoardOccupied()
@@ -185,7 +185,7 @@ class Game:
         pass
     
     # DEFAULT GAME UPDATE
-    # Returns reward value
+    # Returns reward value 
     def updateCannonDamage(self):
         damage = self.getDamageProduction()
         invaders = self.getInvaders()
@@ -507,7 +507,7 @@ class Game:
         print(f"GP Collected\t\t{self.gp_collected}\tWeapons\t\t\t{self.weapons}")
         print(f"Steel Collected\t\t{self.s_collected}\tInvaders Killed\t\t{self.invaders_killed}" )
         print(f"Action Taken\t\t{self.actions_taken}\tBoard Occupied\t\t{self.getBoardOccupied()}")
-        print(f"Discarded\t\t{self.discard}\tBanner\t\t\t{self.banner_holder.getStock()}")
+        # print(f"Discarded\t\t{self.discard}\tBanner\t\t\t{self.banner_holder.getStock()}")
         print("------------------------------------------------------------------------------------------------------")
 
     def getOre(self) -> int:

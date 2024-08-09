@@ -66,4 +66,5 @@ if __name__ == "__main__":
     model = MaskablePPO(MaskableActorCriticPolicy, env, gamma = 0.9999, ent_coef=0.001, verbose=0)
     model.learn(total_timesteps=8640*300)
     # env.reset()
+    action = model.predict(env)
     # check_env(env.unwrapped)
