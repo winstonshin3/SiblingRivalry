@@ -24,8 +24,8 @@ class CustomEnv(gym.Env):
         super().__init__()
         self.g1 = sr.Game()
         self.action_space = spaces.Discrete(len(self.g1.action_mapping))
-        high = np.array([400, 400, 40, 500, 40, 500, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40])
-        self.observation_space = spaces.Box(low=0, high=high, shape=(18, ), dtype=np.int64)
+        high = np.array([400, 400, 40, 500, 40, 500, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40])
+        self.observation_space = spaces.Box(low=0, high=high, shape=(25, ), dtype=np.int64)
 
     def step(self, action):
         reward = self.g1.perform_action(action)

@@ -14,8 +14,8 @@ TECHNICAL DEBT
 - Create mergable interface
   - Anvil, Cannon, Furance, InvaderPart, Resource, Weapon
 - Extract action functions
-  - solution1: Strategy pattern
-  - solutoin2:
+  - solution1: state pattern
+  - solutoin2: Extract as class
 
 REWARD CALCULATOR (should be between -1 to 1)
 - Muskeeteer = 15000, 25000

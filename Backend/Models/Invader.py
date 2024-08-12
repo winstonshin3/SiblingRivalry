@@ -64,6 +64,12 @@ class BattleMage(Invader):
     def __init__(self):
         self.score = 750000
         self.health = 500000
+
+    def __repr__(self):
+        return "BM"
+
+    def getScore(self) -> int:
+        return self.score
         
 # class InvaderType(Enum):
 #     FLAGGRUNT = Invader(250, 500)
