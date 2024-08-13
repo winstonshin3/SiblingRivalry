@@ -11,10 +11,11 @@ TECHNICAL DEBT
 - Refractor all reward functions
 - Replace attribute sorting in addToInventory
   - solution1: 2-sum + find min?
+  - solution2: use heap
 - Create mergable interface
   - Anvil, Cannon, Furance, InvaderPart, Resource, Weapon
 - Extract action functions
-  - solution1: state pattern
+  - solution1: strategy pattern
   - solutoin2: Extract as class
 
 REWARD CALCULATOR (should be between -1 to 1)

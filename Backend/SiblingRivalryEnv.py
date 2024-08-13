@@ -24,8 +24,8 @@ class CustomEnv(gym.Env):
         super().__init__()
         self.g1 = sr.Game()
         self.action_space = spaces.Discrete(len(self.g1.action_mapping))
-        high = np.array([400, 400, 40, 500, 40, 500, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40])
-        self.observation_space = spaces.Box(low=0, high=high, shape=(25, ), dtype=np.int64)
+        high = np.array([4000, 4000, 400, 500, 400, 500, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 6, 6, 6, 6, 6, 6])
+        self.observation_space = spaces.Box(low=0, high=high, shape=(32, ), dtype=np.int64)
 
     def step(self, action):
         reward = self.g1.perform_action(action)
@@ -63,8 +63,7 @@ if __name__ == "__main__":
     env = gym.make('sibling_rivalry', render_mode='human')
     # Check environment
     env = ActionMasker(env, mask_fn)
-    model = MaskablePPO(MaskableActorCriticPolicy, env, gamma = 0.9999, ent_coef=0.001, verbose=0)
-    model.learn(total_timesteps=8640*300)
+    model = MaskablePPO(MaskableActorCriticPolicy, env, gamma = 0.99999, ent_coef=0.0, verbose=1)
+    model.learn(total_timesteps=8640*3000)
     # env.reset()
-    action = model.predict(env)
     # check_env(env.unwrapped)

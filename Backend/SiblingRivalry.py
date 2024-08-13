@@ -40,7 +40,21 @@ class Game:
             25: self.action_purchase_alchemy_table,
             26: self.action_tap_alchemy_table,
             27: self.action_merge_bomb,
-            28: self.action_merge_alchemy_table
+            28: self.action_merge_alchemy_table,
+            29: self.action_attack_battlemage,
+            30: self.action_use_bomb,
+            31: self.action_purchase_battle_mage_decoy,
+            32: self.action_upgrade_1,
+            33: self.action_upgrade_2,
+            34: self.action_upgrade_3,
+            35: self.action_upgrade_4,
+            36: self.action_upgrade_5,
+            37: self.action_upgrade_6,
+            38: self.action_purchase_trade_1,
+            39: self.action_purchase_trade_2,
+            40: self.action_purchase_trade_3,
+            41: self.action_purchase_trade_4
+
         }
 
     # ACTION MASK
@@ -50,6 +64,7 @@ class Game:
         board_available = board_occupied < Game.MAX_BOARD_SPACE
         banner_stock = self.banner_holder.getStock()
         weapons_available = bool(self.weapons) and self.weapons[-1].level > 0
+        bombs_available = bool(self.bombs) and self.bombs[-1].level > 2
         # These policies are coupled to self.action_mapping:
         mask[0] = True
         mask[1] = bool(self.anvils) and board_available and self.ore >= self.anvils[0].getCost()
@@ -62,11 +77,11 @@ class Game:
         mask[8] = bool(self.warriors) and weapons_available
         mask[9] = self.mergeAble(self.anvils, 4)
         mask[10] = self.mergeAble(self.furances, 4) and board_occupied >= Game.MAX_BOARD_SPACE
-        mask[11] = bool(self.musketeerDecoys or self.warriorDecoys)
+        mask[11] = bool(self.musketeerDecoys or self.warriorDecoys or self.battlemageDecoys)
         mask[12] = board_occupied >= Game.MAX_BOARD_SPACE
-        mask[13] = self.gun_powder >= 20 and board_available
-        mask[14] = self.gun_powder >= 10 and self.steel >= 5 and board_available
-        mask[15] = self.steel >= 25  and board_available
+        mask[13] = self.gun_powder >= 20 and board_available and self.invaders_killed >= 10
+        mask[14] = self.gun_powder >= 10 and self.steel >= 5 and board_available and self.invaders_killed >= 25
+        mask[15] = self.steel >= 25  and board_available and self.invaders_killed >= 50
         mask[16] = self.mergeAble(self.steelPile, 3)
         mask[17] = self.mergeAble(self.ironCrates, 1)
         mask[18] = self.mergeAble(self.warriorParts, 4)
@@ -75,11 +90,24 @@ class Game:
         mask[21] = bool(self.flagGrunts) and weapons_available
         mask[22] = bool(self.spearGrunts) and weapons_available
         mask[23] = bool(self.swordGrunts) and weapons_available
-        mask[24] = self.mergeAble(self.cannons, 4)
-        mask[25] = self.steel >= 20 and self.gun_powder >= 40 and board_available
+        mask[24] = self.mergeAble(self.cannons, 4) and board_occupied >= Game.MAX_BOARD_SPACE
+        mask[25] = self.steel >= 20 and self.gun_powder >= 40 and board_available and self.invaders_killed >= 200
         mask[26] = bool(self.alchemyTables)
         mask[27] = self.mergeAble(self.bombs, 3)
         mask[28] = self.mergeAble(self.alchemyTables, 2)
+        mask[29] = bool(self.battlemages) and weapons_available
+        mask[30] = bool(self.battlemages) and bombs_available
+        mask[31] = self.steel >= 40 and board_available and self.invaders_killed >= 100
+        mask[32] = self.mask_upgrade_1() 
+        mask[33] = self.mask_upgrade_2()
+        mask[34] = self.mask_upgrade_3()
+        mask[35] = self.mask_upgrade_4()
+        mask[36] = self.mask_upgrade_5()
+        mask[37] = self.mask_upgrade_6() and bool(self.alchemyTables)
+        mask[38] = self.mask_trade_1() and board_available
+        mask[39] = self.mask_trade_2() and board_available
+        mask[40] = self.mask_trade_3() and board_available
+        mask[41] = self.mask_trade_4() and board_available
         return mask
 
     def reset(self):
@@ -93,15 +121,16 @@ class Game:
         f4 = Models.Furance.Furance(2)
         f5 = Models.Furance.Furance(3)
         f6 = Models.Furance.Furance(3)
-        c1 = Models.Cannon.Cannon(2)
 
+        self.day = 1 
         self.score = 0
         self.actions_taken = 0
         self.invaders_killed = 0
         self.banner_holder = Models.Banner.BannerHolder()
-        self.gun_powder = 250         # divide by 5
-        self.steel = 150             # divide by 5
-        self.ore = 50000           
+        self.gun_powder = 25         # divide by 5
+        self.steel = 15             # divide by 5
+        self.ore = 50000
+        self.ore_cap = 100000           
         self.anvils = [a1]           
         self.furances = [f1, f2, f3, f4, f5, f6]  
         self.weapons = []           
@@ -111,7 +140,7 @@ class Game:
         self.warriorDecoys = []     
         self.musketeers = [m1, m2]  
         self.warriors = [w1]        
-        self.cannons = [c1]           
+        self.cannons = []           
         self.gunpowderPile = []     
         self.steelPile = []         
         self.ironCrates = []     
@@ -123,18 +152,24 @@ class Game:
         self.battlemageDecoys = []
         self.alchemyTables = []
         self.bombs = []
+        
 
         # For Upgrades
         self.score_multiplier = 1
         self.score_multiplier_level = 0
-        self.banner_multiplier = 1
-        self.banner_multiplier_level = 0
+
+        self.banner_time_reduction = 1
+        self.banner_time_reduction_level = 0
+
         self.iron_cap_multiplier = 1
         self.iron_cap_multiplier_level = 0
+
         self.weapon_damage_multiplier = 1
         self.weapon_damage_multiplier_level = 0
+
         self.cannon_damage_multiplier = 1
         self.cannon_damage_multiplier_level = 0
+
         self.bomb_damage_multiplier = 1
         self.bomb_damage_multiplier_level = 0
 
@@ -211,8 +246,12 @@ class Game:
         self.updateOre(stateOreProduced)
         self.updateActionsTaken()
 
-        if self.actions_taken % 360 == 0 and self.banner_holder.getStock() < 10:
+        if self.actions_taken % int(86400 / Game.SECONDS_PER_ACTION) == 0:
+            self.updateDay()
+
+        if self.actions_taken % int((5400 - self.banner_time_reduction) / Game.SECONDS_PER_ACTION) == 0 and self.banner_holder.getStock() < 10:
             self.banner_holder.restock()
+
         return reward + reward_from_cannons
     
     def validate_action(self):
@@ -237,6 +276,7 @@ class Game:
         self.swordGrunts = []
         self.musketeers = []
         self.warriors = []
+        self.battlemages = []
         for invader in invaders:
             invader_class = invader.__class__
             if invader.getHealth() > 0:
@@ -264,10 +304,9 @@ class Game:
         total_production = 0
         for c in self.cannons:
             total_production += c.getDamage()
-        return int(total_production * Game.SECONDS_PER_ACTION / 180)
+        return int(total_production * self.cannon_damage_multiplier * Game.SECONDS_PER_ACTION / 180)
 
-    # RETURN OBSERVATION
-    # TO TEST
+
     def getObservation(self):
         obs = [
             self.gun_powder // 5,
@@ -293,15 +332,22 @@ class Game:
             len(self.steelPile),
             len(self.ironCrates),
             self.banner_holder.getStock(),
+            len(self.banners),
             len(self.bombs),
-            len(self.alchemyTables)
+            len(self.alchemyTables),
+            self.score_multiplier_level,
+            self.banner_time_reduction_level,
+            self.iron_cap_multiplier_level,
+            self.weapon_damage_multiplier_level,
+            self.cannon_damage_multiplier_level,
+            self.bomb_damage_multiplier_level
         ]
         return obs
 
 
     # ACTIONS
     def action_no_action(self):
-        return 0.1
+        return 0
 
     def action_tap_worst_anvil(self):
         anvil = self.anvils[0]
@@ -324,7 +370,7 @@ class Game:
         table_product = alchemy_table.tapProduction()
         self.addToInventory(table_product)
         self.updateGunpowder(cost * -1)
-        return -1
+        return 0
     
     def action_attack_flag_grunt(self): 
         from Models.Resource import IronCrate
@@ -348,7 +394,7 @@ class Game:
 
     def helper_attack_invader(self, invaders, reward):
         weapon = self.weapons.pop()
-        damage = weapon.getDamage()
+        damage = weapon.getDamage() * self.weapon_damage_multiplier
         invader = invaders[0]
         invader.takeDamage(damage)
         if invader.getHealth() <= 0:
@@ -408,17 +454,17 @@ class Game:
             warrior_decoy = self.warriorDecoys.pop(0)
             warrior = warrior_decoy.tapToSummon()
             self.addToInventory(warrior)
-            return 1
-        if len(self.musketeerDecoys) > 0:
-            muskeeter_decoy = self.musketeerDecoys.pop(0)
-            muskeeter = muskeeter_decoy.tapToSummon()
-            self.addToInventory(muskeeter)
-            return 1
+            return 0
         if len(self.battlemageDecoys) > 0:
             battlemage_decoy = self.battlemageDecoys.pop(0)
             battlemage = battlemage_decoy.tapToSummon()
             self.addToInventory(battlemage)
-            return 1
+            return 0
+        if len(self.musketeerDecoys) > 0:
+            muskeeter_decoy = self.musketeerDecoys.pop(0)
+            muskeeter = muskeeter_decoy.tapToSummon()
+            self.addToInventory(muskeeter)
+            return 0
         return -1
     
     def action_discard(self):
@@ -437,12 +483,12 @@ class Game:
         elif self.anvils:
             self.anvils.pop(0)
         self.discard += 1
-        return -1
+        return -10
 
     def action_collect_resource(self): # could be split into three
         if len(self.ironCrates) > 0:
             ic = self.ironCrates.pop()
-            self.updateOre(ic.getResourceValue())
+            self.updateOre(ic.getResourceValue() * self.iron_cap_multiplier)
             return ic.getLevel()
         if len(self.gunpowderPile) > 0:
             gp = self.gunpowderPile.pop()
@@ -460,7 +506,7 @@ class Game:
         from Models.Cannon import Cannon
         self.updateGunpowder(-20)
         self.addToInventory(Cannon(1))
-        return 0
+        return 1
 
     def action_purchase_furnace(self): 
         from Models.Furance import Furance
@@ -496,53 +542,311 @@ class Game:
             self.banners.pop(0)
         return 0
     
-    # TODOs
+    # TO TEST
     def action_attack_battlemage(self):
-        pass
+        weapon = self.weapons.pop()
+        damage = weapon.getDamage() * self.weapon_damage_multiplier
+        invader = self.battlemages[0]
+        invader.takeDamage(damage)
+        if invader.getHealth() <= 0:
+            self.battlemages.pop(0)
+            self.updateKillCount()
+            self.updateScore(invader.score)
+            return int(invader.score / 100)
+        return 0
 
     def action_use_bomb(self):
-        pass
+        bomb = self.bombs.pop()
+        damage = bomb.getDamage() * self.bomb_damage_multiplier
+        invader = self.battlemages[0]
+        invader.takeDamage(damage)
+        if invader.getHealth() <= 0:
+            self.battlemages.pop(0)
+            self.updateKillCount()
+            self.updateScore(invader.score)
+            return int(invader.score / 100)
+        return 0
 
     def action_purchase_battle_mage_decoy(self):
-        pass
+        from Models.Decoy import BattleMageDecoy
+        self.updateSteel(-40)
+        self.addToInventory(BattleMageDecoy())
+        return 0
 
-    def action_uprade_1(self):
-        pass
+    def action_upgrade_1(self):
+        self.score_multiplier_level += 1
+        if self.score_multiplier_level == 1:
+            self.score_multiplier = 1.1
+            self.updateSteel(-10)
+        elif self.score_multiplier_level == 2:
+            self.score_multiplier = 1.2
+            self.updateSteel(-15)
+            self.updateGunpowder(-25)
+        elif self.score_multiplier_level == 3:
+            self.score_multiplier = 1.3
+            self.updateGunpowder(-50)
+        elif self.score_multiplier_level == 4:
+            self.score_multiplier = 1.4
+            self.updateSteel(-25)
+            self.updateGunpowder(-50)    
+        elif self.score_multiplier_level == 5:
+            self.score_multiplier = 1.5
+            self.updateSteel(-75)
+        return 0
 
-    def action_uprade_2(self):
-        pass
+    def mask_upgrade_1(self):
+        if self.score_multiplier_level == 0:
+            return self.steel >= 10
+        elif self.score_multiplier_level == 1:
+            return self.steel >= 15 and self.gun_powder >= 25
+        elif self.score_multiplier_level == 2:
+            return self.steel >= 50
+        elif self.score_multiplier_level == 3:
+            return self.steel >= 25 and self.gun_powder >= 50  
+        elif self.score_multiplier_level == 4:
+            return self.steel >= 75
+        else:
+            return False
 
-    def action_uprade_3(self):
-        pass
+    def action_upgrade_2(self):
+        self.banner_time_reduction_level += 1
+        if self.banner_time_reduction_level == 1:
+            self.banner_time_reduction = 600
+            self.updateSteel(-10)
+            self.updateGunpowder(-10)  
+        elif self.banner_time_reduction_level == 2:
+            self.banner_time_reduction = 1200
+            self.updateGunpowder(-25)  
+        elif self.banner_time_reduction_level == 3:
+            self.banner_time_reduction = 1800
+            self.updateSteel(-25)
+        return 0
 
-    def action_uprade_4(self):
-        pass
+    def mask_upgrade_2(self):
+        if self.banner_time_reduction_level == 0:
+            return self.steel >= 10 and self.gun_powder >= 10
+        elif self.banner_time_reduction_level == 1:
+            return self.gun_powder >= 25
+        elif self.banner_time_reduction_level == 2:
+            return self.steel >= 25
+        else:
+            return False
+        
+    def action_upgrade_3(self):
+        self.iron_cap_multiplier_level += 1
+        if self.iron_cap_multiplier_level == 1:
+            self.iron_cap_multiplier = 1.5
+            self.ore_cap = 150000
+            self.updateSteel(-10)
+        elif self.iron_cap_multiplier_level == 2:
+            self.iron_cap_multiplier = 2
+            self.ore_cap = 200000
+            self.updateGunpowder(-20)            
+        elif self.iron_cap_multiplier_level == 3:
+            self.iron_cap_multiplier = 2.5
+            self.ore_cap = 250000
+            self.updateSteel(-25) 
+        elif self.iron_cap_multiplier_level == 4:
+            self.iron_cap_multiplier = 3
+            self.ore_cap = 300000
+            self.updateSteel(-25)
+            self.updateGunpowder(-25)
+        elif self.iron_cap_multiplier_level == 5:
+            self.iron_cap_multiplier = 4
+            self.ore_cap = 400000
+            self.updateSteel(-50)
+        return 0
+    
+    def mask_upgrade_3(self):
+        if self.iron_cap_multiplier_level == 0:
+            return self.steel >= 10
+        elif self.iron_cap_multiplier_level == 1:
+            return self.gun_powder >= 20
+        elif self.iron_cap_multiplier_level == 2:
+            return self.steel >= 25
+        elif self.iron_cap_multiplier_level == 3:
+            return self.gun_powder >= 25 and self.steel >= 25
+        elif self.iron_cap_multiplier_level == 4:
+            return self.steel >= 50
+        else:
+            return False
 
-    def action_uprade_5(self):
-        pass
+    def action_upgrade_4(self):
+        self.weapon_damage_multiplier_level += 1
+        if self.weapon_damage_multiplier_level == 1:
+            self.weapon_damage_multiplier = 1.25
+            self.updateGunpowder(-15)  
+        elif self.weapon_damage_multiplier_level == 2:
+            self.weapon_damage_multiplier = 1.5
+            self.updateSteel(-15)  
+        elif self.weapon_damage_multiplier_level == 3:
+            self.weapon_damage_multiplier = 2
+            self.updateGunpowder(-20)  
+            self.updateSteel(-10)
+        return 0
+    
+    def mask_upgrade_4(self):
+        if self.weapon_damage_multiplier_level == 0:
+            return self.gun_powder >= 15
+        elif self.weapon_damage_multiplier_level == 1:
+            return self.steel >= 15
+        elif self.weapon_damage_multiplier_level == 2:
+            return self.steel >= 10 and self.gun_powder >= 20
+        else:
+            return False
 
-    def action_uprade_6(self):
-        pass
+    def action_upgrade_5(self):
+        self.cannon_damage_multiplier_level += 1
+        if self.cannon_damage_multiplier_level == 1:
+            self.cannon_damage_multiplier = 1.25
+            self.updateGunpowder(-25)  
+        elif self.cannon_damage_multiplier_level == 2:
+            self.cannon_damage_multiplier = 1.5
+            self.updateSteel(-10)
+            self.updateGunpowder(-20) 
+        elif self.cannon_damage_multiplier_level == 3:
+            self.cannon_damage_multiplier = 2
+            self.updateSteel(-25)
+        return 0
+    
+    def mask_upgrade_5(self):
+        if self.cannon_damage_multiplier_level == 0:
+            return self.gun_powder >= 25
+        elif self.cannon_damage_multiplier_level == 1:
+            return self.steel >= 10 and self.gun_powder >= 20
+        elif self.cannon_damage_multiplier_level == 2:
+            return self.steel >= 25
+        else:
+            return False
 
-    def action_purchase_trade_1(self): # should be split
-        pass
+    def action_upgrade_6(self):
+        self.bomb_damage_multiplier_level += 1
+        if self.bomb_damage_multiplier_level == 1:
+            self.bomb_damage_multiplier = 1.25
+            self.updateGunpowder(-10)  
+            self.updateSteel(-10)
+        elif self.bomb_damage_multiplier_level == 2:
+            self.bomb_damage_multiplier = 1.5
+            self.updateGunpowder(-30) 
+        elif self.bomb_damage_multiplier_level == 3:
+            self.bomb_damage_multiplier = 2
+            self.updateSteel(-30)
+        return 0
 
-    def action_purchase_trade_2(self): # should be split
-        pass
+    def mask_upgrade_6(self):
+        if self.bomb_damage_multiplier_level == 0:
+            return self.gun_powder >= 10 and self.steel > 10
+        elif self.bomb_damage_multiplier_level == 1:
+            return self.gun_powder >= 30
+        elif self.bomb_damage_multiplier_level == 2:
+            return self.steel >= 30
+        else:
+            return False
 
-    def action_purchase_trade_3(self): # should be split
-        pass
+    def action_purchase_trade_1(self):
+        from Models.Decoy import MusketeerDecoy, WarriorDecoy
+        from Models.Furance import Furance
+        if self.day == 1:
+            self.addToInventory(MusketeerDecoy())
+            self.updateGunpowder(-5)
+        elif self.day == 2:
+            self.addToInventory(WarriorDecoy())
+            self.updateGunpowder(-15)
+        elif self.day == 3:
+            self.addToInventory(Furance(3))
+            self.updateGunpowder(-40)
+        self.trade_1 = False
+        return 1
+    
+    def mask_trade_1(self):
+        res = self.trade_1
+        if self.day == 1:
+            res = res and self.gun_powder >= 5
+        elif self.day == 2:
+            res = res and self.gun_powder >= 15
+        elif self.day == 3:
+            res = res and self.gun_powder >= 40
+        return res
 
-    def action_purchase_trade_4(self): # should be split
-        pass
+    def action_purchase_trade_2(self):
+        from Models.Resource import SteelPile
+        from Models.Furance import Furance
+        from Models.Alchemy import AlchemyTable
+        if self.day == 1:
+            self.addToInventory(SteelPile(3))
+            self.updateGunpowder(-25)
+        elif self.day == 2:
+            self.addToInventory(Furance(3))
+            self.updateGunpowder(-25)
+        elif self.day == 3:
+            self.addToInventory(AlchemyTable(1))
+            self.updateSteel(-30)
+        self.trade_2 = False
+        return 1
+    
+    def mask_trade_2(self):
+        res = self.trade_2
+        if self.day == 1:
+            res = res and self.gun_powder >= 25
+        elif self.day == 2:
+            res = res and self.gun_powder >= 25
+        elif self.day == 3:
+            res = res and self.steel >= 30
+        return res
+
+    def action_purchase_trade_3(self):
+        from Models.Anvil import Anvil
+        from Models.Decoy import BattleMageDecoy
+        from Models.Cannon import Cannon
+        if self.day == 1:
+            self.addToInventory(Anvil(2))
+            self.updateSteel(-40)
+        elif self.day == 2:
+            self.addToInventory(BattleMageDecoy())
+            self.updateSteel(-25)
+        elif self.day == 3:
+            self.addToInventory(Cannon(5))
+            self.updateSteel(-60)
+        self.trade_3 = False
+        return 1
+    
+    def mask_trade_3(self):
+        res = self.trade_3
+        if self.day == 1:
+            res = res and self.steel >= 40
+        elif self.day == 2:
+            res = res and self.steel >= 25
+        elif self.day == 3:
+            res = res and self.steel >= 60
+        return res
+
+    def action_purchase_trade_4(self):
+        from Models.Cannon import Cannon
+        from Models.Resource import SteelPile
+        from Models.Decoy import BattleMageDecoy
+        if self.day == 1:
+            self.addToInventory(Cannon(2))
+        elif self.day == 2:
+            self.addToInventory(SteelPile(3))
+        elif self.day == 3:
+            self.addToInventory(BattleMageDecoy())
+        self.trade_4 = False
+        return 1
+    
+    def mask_trade_4(self):
+        return self.trade_4
     
 
-
-
-
     # UTILITIES
+    def updateDay(self):
+        self.day += 1
+        self.trade_1 = True
+        self.trade_2 = True
+        self.trade_3 = True
+        self.trade_4 = True
+
     def updateScore(self, score):
-        self.score = self.score + score
+        self.score = int(self.score + (score * self.score_multiplier))
 
     def updateSteel(self, steel):
         self.steel = self.steel + steel
@@ -551,8 +855,12 @@ class Game:
         self.gun_powder = self.gun_powder + gun_powder
 
     def updateOre(self, ore):
-        self.ore = self.ore + ore
-    
+        new_ore = self.ore + ore
+        if new_ore > self.ore_cap:
+            self.ore = self.ore_cap
+        else:
+            self.ore = new_ore
+        
     def updateKillCount(self):
         self.invaders_killed += 1
     
@@ -592,7 +900,7 @@ class Game:
                 len(self.warriorDecoys) + 
                 len(self.musketeers) + 
                 len(self.warriors) + 
-                len(self.cannons) + 
+                len(self.cannons) +
                 len(self.gunpowderPile) + 
                 len(self.steelPile) + 
                 len(self.ironCrates) +
@@ -614,7 +922,14 @@ class Game:
         print(f"GP Collected\t\t{self.gp_collected}\tWeapons\t\t\t{self.weapons + self.bombs}")
         print(f"Steel Collected\t\t{self.s_collected}\tInvaders Killed\t\t{self.invaders_killed}" )
         print(f"Action Taken\t\t{self.actions_taken}\tBoard Occupied\t\t{self.getBoardOccupied()}")
-        # print(f"Discarded\t\t{self.discard}\tBanner\t\t\t{self.banner_holder.getStock()}")
+        print(f"Discarded\t\t{self.discard}\tBanner\t\t\t{self.banner_holder.getStock()}")
+        print(f"Upgrades", self.score_multiplier_level, 
+              self.banner_time_reduction_level, 
+              self.iron_cap_multiplier_level,
+              self.weapon_damage_multiplier_level,
+              self.cannon_damage_multiplier_level,
+              self.bomb_damage_multiplier_level)
+        print(f"Day {self.day}")
         print("------------------------------------------------------------------------------------------------------")
 
     def getOre(self) -> int:
@@ -634,11 +949,3 @@ if __name__ == "__main__":
             break
         else:
             print("Reward received:", g1.perform_action(user_input),"\n")
-        # try:
-        #     user_input = int(user_input)
-        #     if user_input == -1:
-        #         break
-        #     else:
-        #         print("Reward received:", g1.perform_action(user_input),"\n")
-        # except:
-        #     print("Error was thrown")

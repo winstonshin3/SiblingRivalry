@@ -5,7 +5,7 @@ class AlchemyTable:
         self.level = level
 
     def __repr__(self):
-        return f"A{self.level}"
+        return f"AT{self.level}"
     
     def getUpgrade(self):
         return AlchemyTable(self.level + 1)

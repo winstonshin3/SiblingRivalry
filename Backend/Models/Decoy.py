@@ -31,7 +31,7 @@ class BattleMageDecoy():
         return self.description
 
     def tapToSummon(self):
-        from Invader import BattleMage
+        from Models.Invader import BattleMage
         return BattleMage()
     
 # Tests
