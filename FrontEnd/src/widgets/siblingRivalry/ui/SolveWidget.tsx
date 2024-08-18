@@ -16,7 +16,7 @@ export const SolveWidget = () => {
       width="100%"
       colorScheme="teal"
       isLoading={isLoading}
-      loadingText="Solving..."
+      loadingText="Solving"
       onClick={handleSolveClick}
     >
       Solve!
