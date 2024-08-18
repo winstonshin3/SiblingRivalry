@@ -1,9 +1,18 @@
-import { Grid, GridItem, Heading, VStack } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Heading, HStack, VStack } from "@chakra-ui/react";
 
 export const MainGameBoardWidget = () => {
   return (
-    <>
-      <VStack align="stretch">
+    <HStack
+      spacing={3}
+      justifyContent="center"
+      alignItems="flex-start"
+      flexWrap="wrap"
+    >
+      <VStack
+        align="stretch"
+        width={{ base: "full", lg: "auto" }}
+        maxWidth="400px"
+      >
         <Heading as="h3" size="md" textAlign="center" width="100%">
           Main Game Board
         </Heading>
@@ -23,25 +32,58 @@ export const MainGameBoardWidget = () => {
           })}
         </Grid>
       </VStack>
-      <VStack>
-        <Heading as="h3" size="md" textAlign="center" width="100%">
+      <VStack
+        align="stretch"
+        width={{ base: "full", lg: "auto" }}
+        maxWidth="400px"
+      >
+        <Heading
+          as="h3"
+          size="md"
+          textAlign={{ base: "left", lg: "center" }}
+          width="100%"
+        >
           Invaders
         </Heading>
-        <Grid templateColumns="repeat(1, 1fr)" gap={2} p={4} bg="purple.900">
-          {[...Array(8)].map((_, index) => {
-            return (
-              <GridItem
-                key={index}
-                w="60px"
-                h="60px"
-                bg={"gray.600"}
-                border="1px"
-                borderColor={"gray.500"}
-              />
-            );
-          })}
-        </Grid>
+        <Box
+          overflowX="auto"
+          width="100%"
+          bg="purple.900"
+          css={{
+            "&::-webkit-scrollbar": {
+              height: "8px",
+            },
+            "&::-webkit-scrollbar-track": {
+              width: "6px",
+              background: "black.800",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              background: "black.600",
+              borderRadius: "24px",
+            },
+          }}
+        >
+          <Grid
+            templateColumns={{ base: "repeat(8, 60px)", lg: "repeat(1, 60px)" }}
+            gap={2}
+            p={4}
+            minWidth={{ base: "520px", lg: "auto" }}
+          >
+            {[...Array(8)].map((_, index) => {
+              return (
+                <GridItem
+                  key={index}
+                  w="60px"
+                  h="60px"
+                  bg={"gray.600"}
+                  border="1px"
+                  borderColor={"gray.500"}
+                />
+              );
+            })}
+          </Grid>
+        </Box>
       </VStack>
-    </>
+    </HStack>
   );
 };

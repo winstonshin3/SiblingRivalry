@@ -7,16 +7,11 @@ import { Box, Center, VStack } from "@chakra-ui/react";
 
 export const SiblingRivalryPage = () => {
   return (
-    <Box height="100vh" width="100wh" overflow="scroll">
+    <Box height="100vh" width="100wh">
       <Center>
-        <VStack spacing={3} align="stretch" maxWidth="667px">
+        <VStack spacing={3} align="stretch" maxWidth="667px" overflow="auto">
           <UserInputsWidget />
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            gap={3}
-          >
+          <Box>
             <MainGameBoardWidget />
           </Box>
           <SolveWidget />
