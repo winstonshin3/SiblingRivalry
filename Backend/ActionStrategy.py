@@ -4,7 +4,7 @@ class ActionStrategy():
     @abstractmethod
     def perform_action(self, game):
         pass
-
+        
     @abstractmethod
     def get_reward(self, game):
         pass
@@ -18,7 +18,7 @@ class ActionAttackMuskeeteer(ActionStrategy):
         print(game.furances)
 
     def get_reward(self, game):
-        pass
+        return 0
 
     def is_action_valid(self, game):
         pass

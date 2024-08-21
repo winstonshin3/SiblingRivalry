@@ -1,38 +1,39 @@
 # Sibling Rivalry
 
-TODOs
+REWARD CALCULATOR (should be between -1 to 1)
 
-- More purchases and add conditionals
-- Upgrades
-- Trades
+- Reward function = 0.8 * score + 0.1 * damage + 0.1 * health produced
+- score = multiplier * (passively + actively) / (2 * bm_health)
+- damage = multiplier * (passively + actively) / (2 * bm_health)
+- health produced = (passively + actively) / (2 * bm_health)
+
+
+- Value of Steel
+  - Standard: cost of battle mage; adds to health production
+
+- Value of Gunpowder
+  - Standard: damage left for cannon/damage of bomb; adds to damage production
+
+- Ore
+  - Also translated to health or damage production defined by anvils.
+
+- Active actions:
+  - Killing invader
+  - Collecting resource
+  - Purchasing upgrade / trade / cannon / anvil / furance / battlemage / alchemy table
+- Passive actions:
+  - Killing invader
+  - Producing Ore
+
 
 TECHNICAL DEBT
 
-- Refractor all reward functions
+- Refractor/extract all reward functions
 - Replace attribute sorting in addToInventory
   - solution1: 2-sum + find min?
   - solution2: use heap
-- Create mergable interface
+- Create mergable interface for typing
   - Anvil, Cannon, Furance, InvaderPart, Resource, Weapon
+- Create damage interface for typing
 - Extract action functions
   - solution1: strategy pattern
-  - solutoin2: Extract as class
-
-REWARD CALCULATOR (should be between -1 to 1)
-- Muskeeteer = 15000, 25000
-- Warrior = 50000, 50000
-- Damage
-  - score / health * damage
-- Ore
-  - anvil.level() -> combination
-- Gun Powder 
-  - 
-- Steel
-- Invader Part
-  - Muskeeter 2**level * 
-- Furance
-- Weapons
-- Anvil
-- Decoy
-- Discard
-

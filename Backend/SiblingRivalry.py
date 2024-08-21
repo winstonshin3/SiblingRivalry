@@ -928,15 +928,13 @@ class Game:
 # TEST
 if __name__ == "__main__":
     g1 = Game()
-    a = ActionStrategy.ActionAttackMuskeeteer()
-    a.perform_action(g1)
-    # while True:
-    #     g1.render()
-    #     print("Action mask:", g1.get_action_mask())
-    #     print("Observation:", g1.getObservation())
-    #     user_input = input("\nPerform Action: ").strip().lower()
-    #     user_input = int(user_input)
-    #     if user_input == -1:
-    #         break
-    #     else:
-    #         print("Reward received:", g1.perform_action(user_input),"\n")
+    while True:
+        g1.render()
+        print("Action mask:", g1.get_action_mask())
+        print("Observation:", g1.getObservation())
+        user_input = input("\nPerform Action: ").strip().lower()
+        user_input = int(user_input)
+        if user_input == -1:
+            break
+        else:
+            print("Reward received:", g1.perform_action(user_input),"\n")
