@@ -1,3 +1,4 @@
+import { Invader, INVADERS_LIST, MechanicUnitCell } from "@/entities/mechanics";
 import { Box, Grid, GridItem, Heading, HStack, VStack } from "@chakra-ui/react";
 
 export const MainGameBoardWidget = () => {
@@ -64,12 +65,15 @@ export const MainGameBoardWidget = () => {
           }}
         >
           <Grid
-            templateColumns={{ base: "repeat(8, 60px)", lg: "repeat(1, 60px)" }}
+            templateColumns={{
+              base: `repeat(${INVADERS_LIST.length}, 60px)`,
+              lg: "repeat(1, 60px)",
+            }}
             gap={2}
             p={4}
             minWidth={{ base: "520px", lg: "auto" }}
           >
-            {[...Array(8)].map((_, index) => {
+            {INVADERS_LIST.map((invader, index) => {
               return (
                 <GridItem
                   key={index}
@@ -78,7 +82,12 @@ export const MainGameBoardWidget = () => {
                   bg={"gray.600"}
                   border="1px"
                   borderColor={"gray.500"}
-                />
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <MechanicUnitCell invader={invader} />
+                </GridItem>
               );
             })}
           </Grid>
