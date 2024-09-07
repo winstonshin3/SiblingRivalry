@@ -12,6 +12,8 @@ export const UserInputsWidget = () => {
           </FormLabel>
           <Input type="tel" placeholder="Score" size="sm" />
         </FormControl>
+      </HStack>
+      <HStack spacing={3}>
         <FormControl display="flex" alignItems="center" id={`ore-${id}`}>
           <FormLabel mb={0} mr={2}>
             Ore
