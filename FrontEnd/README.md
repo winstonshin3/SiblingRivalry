@@ -11,8 +11,7 @@
 
 For the best movement to win your current Game, The Necromerger, Let us know your current game status.
 Drag Invaders into the cells. And Write down the Ore and the Score.
-https://github.com/user-attachments/assets/924dc2c0-beb5-4033-8981-1fce88bb10db
-
+![slibling-rivalry-screen](https://github.com/user-attachments/assets/188640cc-ca44-4529-9029-42a37dc65202)
 
 Then the machine learing model of python's pytorch will return you the best movement to win.
 
