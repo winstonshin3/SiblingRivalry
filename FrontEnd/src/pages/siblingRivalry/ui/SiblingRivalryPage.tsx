@@ -1,9 +1,10 @@
 import {
+  InvadersWidget,
   MainGameBoardWidget,
   SolveWidget,
   UserInputsWidget,
 } from "@/widgets/siblingRivalry";
-import { Box, Center, VStack } from "@chakra-ui/react";
+import { Box, Center, HStack, VStack } from "@chakra-ui/react";
 
 export const SiblingRivalryPage = () => {
   return (
@@ -41,7 +42,27 @@ export const SiblingRivalryPage = () => {
         >
           <UserInputsWidget />
           <Box>
-            <MainGameBoardWidget />
+            <HStack
+              spacing={3}
+              justifyContent="center"
+              alignItems="flex-start"
+              flexWrap="wrap"
+            >
+              <VStack
+                align="stretch"
+                width={{ base: "full", lg: "auto" }}
+                maxWidth="400px"
+              >
+                <MainGameBoardWidget />
+              </VStack>
+              <VStack
+                align="stretch"
+                width={{ base: "full", lg: "auto" }}
+                maxWidth="400px"
+              >
+                <InvadersWidget />
+              </VStack>
+            </HStack>
           </Box>
           <SolveWidget />
         </VStack>
