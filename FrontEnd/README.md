@@ -2,9 +2,18 @@
 
 ## ToC
 
+- [Project Explanation](#project-explanation)
 - [Develop Environment](#develop-environment)
 - [Run the Application](#run-the-application)
 - [Application Archtecture](#application-archtecture)
+
+## Project Explanation
+
+For the best movement to win your current Game, The Necromerger, Let us know your current game status.
+Drag Invaders into the cells. And Write down the Ore and the Score.
+![slibling-rivalry-screen](https://github.com/user-attachments/assets/188640cc-ca44-4529-9029-42a37dc65202)
+
+Then the machine learing model of python's pytorch will return you the best movement to win.
 
 ## Develop Environment
 
@@ -55,3 +64,11 @@ yarn dev
 ## Application Archtecture
 
 > FSD(Feature Sliced Design) [link](https://feature-sliced.design)
+
+## TODO
+
+- [ ] There's five Invaders
+  - [x] Drag those Invaders to place in Gameboard. And each cell has data of invaders placed on it
+  - [ ] But There's submenu. So It could be better to have two row of selections
+    - [ ] Or We can Have some choice which selection I would like to place.
+- [ ] Rest Api With Python Server

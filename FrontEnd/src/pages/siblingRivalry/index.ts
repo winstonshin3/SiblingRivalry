@@ -1,1 +1,1 @@
-export { SiblingRivalryPage } from "./ui/SiblingRavalry";
+export { SiblingRivalryPage } from "./ui/SiblingRivalryPage";
