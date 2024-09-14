@@ -32,17 +32,21 @@ class CustomEnv(gym.Env):
         obs =  self.g1.getObservation()
         observation = np.array(obs)
         terminated = False
-        if self.g1.actions_taken > 8640*3:
+        if self.g1.actions_taken > 8000:
             terminated = True
+        if self.g1.actions_taken < 70:
+            print("Action", action)
+            self.g1.render()
         truncated = False
         info = {}
-        if self.g1.actions_taken == 8640*3:
+        if reward < -10:
             self.g1.render()
 
         return observation, reward, terminated, truncated, info
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
+
         self.g1.reset()
         obs = self.g1.getObservation()
         observation = np.array(obs)
@@ -63,7 +67,7 @@ if __name__ == "__main__":
     env = gym.make('sibling_rivalry', render_mode='human')
     # Check environment
     env = ActionMasker(env, mask_fn)
-    model = MaskablePPO(MaskableActorCriticPolicy, env, gamma = 0.99999, ent_coef=0.0, verbose=1)
-    model.learn(total_timesteps=8640*3000)
+    model = MaskablePPO(MaskableActorCriticPolicy, env, gamma = 0.99999, ent_coef=0.0, verbose=0)
+    model.learn(total_timesteps=1)
     # env.reset()
     # check_env(env.unwrapped)
