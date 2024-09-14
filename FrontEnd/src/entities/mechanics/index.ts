@@ -7,5 +7,10 @@ export {
   battleMage,
   INVADERS_LIST,
 } from "./model/invadersModel";
-export { MechanicUnitCell } from "./ui/MechanicUnitCellUi";
 export { type Invader } from "./types/invader";
+export {
+  type GameBoardState,
+  gameBoardReducer,
+  selectGameBoard,
+  setGameBoard,
+} from "./model/gameboardSlice";
